@@ -32,7 +32,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 65, 65, 65),
+        backgroundColor: const Color.fromARGB(255, 65, 65, 65),
         centerTitle: true,
         title: const Text(
           'Flutter Calculator App',
@@ -40,7 +40,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         ),
       ),
       body: Container(
-        color: Color.fromARGB(255, 10, 10, 10), // Fondo de color oscuro
+        color: const Color.fromARGB(255, 10, 10, 10), // Fondo de color oscuro
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
@@ -91,7 +91,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Color.fromARGB(255, 65, 65, 65),
+        fillColor: const Color.fromARGB(255, 65, 65, 65),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
       ),
@@ -107,7 +107,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     return ElevatedButton(
       onPressed: () => _operate(operation),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(255, 117, 10, 117),
+        backgroundColor: Color.fromARGB(170, 106, 17, 165),
         padding: const EdgeInsets.all(20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       ),
