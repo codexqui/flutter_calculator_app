@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CalculatorScreen extends StatefulWidget {
-  const CalculatorScreen({Key? key}) : super(key: key);
+  const CalculatorScreen({super.key});
 
   @override
   State<CalculatorScreen> createState() => _CalculatorScreenState();
@@ -107,7 +107,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     return ElevatedButton(
       onPressed: () => _operate(operation),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color.fromARGB(170, 106, 17, 165),
+        backgroundColor: const Color.fromARGB(170, 106, 17, 165),
         padding: const EdgeInsets.all(20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       ),
