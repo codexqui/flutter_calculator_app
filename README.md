@@ -1,6 +1,6 @@
-# flutter_calculator_app
+# minimalist_calculator
 
-A new Flutter project.
+A minimalistic Flutter calculator app.
 
 ## Getting Started
 
