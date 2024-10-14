@@ -13,86 +13,115 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   int _number2 = 0;
   final TextEditingController _controller1 = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
+  final FocusNode _focusNode1 = FocusNode();
+  final FocusNode _focusNode2 = FocusNode();
 
   @override
   void initState() {
     super.initState();
     _controller1.text = _number1.toString();
     _controller2.text = _number2.toString();
+
+    // Agregamos listeners para limpiar los campos cuando se hace foco en ellos
+    _focusNode1.addListener(() {
+      if (_focusNode1.hasFocus && _controller1.text == '0') {
+        setState(() {
+          _controller1.clear(); // Limpia el campo si tiene "0"
+        });
+      }
+    });
+
+    _focusNode2.addListener(() {
+      if (_focusNode2.hasFocus && _controller2.text == '0') {
+        setState(() {
+          _controller2.clear(); // Limpia el campo si tiene "0"
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
     _controller1.dispose();
     _controller2.dispose();
+    _focusNode1.dispose();
+    _focusNode2.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 65, 65, 65),
+        backgroundColor: const Color(0xFF1E1E1E),
+        elevation: 0,
         centerTitle: true,
         title: const Text(
-          'Flutter Calculator App',
-          style: TextStyle(color: Colors.white),
+          'Minimalist Calculator',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
         ),
       ),
-      body: Container(
-        color: const Color.fromARGB(255, 10, 10, 10), // Fondo de color oscuro
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(child: _buildNumberInput(_controller1, (value) => _number1 = value)),
-                const SizedBox(width: 16),
-                Expanded(child: _buildNumberInput(_controller2, (value) => _number2 = value)),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildOperationButton('+', Icons.add),
-                _buildOperationButton('-', Icons.remove),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildOperationButton('*', Icons.close),
-                _buildOperationButton('/', Icons.auto_fix_off),
-              ],
-            ),
-            const SizedBox(height: 40),
-            Text(
-              'Result: $_result',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            const Spacer(),
-            const Text(
-              'Desarrollo en proceso por: CodexQUI',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-          ],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(child: _buildNumberInput(_controller1, _focusNode1, (value) => _number1 = value)),
+                  const SizedBox(width: 16),
+                  Expanded(child: _buildNumberInput(_controller2, _focusNode2, (value) => _number2 = value)),
+                ],
+              ),
+              const SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildOperationButton('+'),
+                  _buildOperationButton('–'), // Usar guion largo para una mejor visualización
+                  _buildOperationButton('×'),
+                  _buildOperationButton('÷'),
+                ],
+              ),
+              const SizedBox(height: 40),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E1E1E),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'Result: $_result',
+                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w300, color: Colors.white),
+                ),
+              ),
+              const Spacer(),
+              const Text(
+                'Developed by: CodexQUI',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300, color: Colors.white60),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildNumberInput(TextEditingController controller, Function(int) onChanged) {
+  Widget _buildNumberInput(TextEditingController controller, FocusNode focusNode, Function(int) onChanged) {
     return TextField(
       controller: controller,
+      focusNode: focusNode,
       textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 45, color: Colors.white),
+      style: const TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.w300),
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         filled: true,
-        fillColor: const Color.fromARGB(255, 65, 65, 65),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        fillColor: const Color(0xFF1E1E1E),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
         contentPadding: const EdgeInsets.symmetric(vertical: 16),
       ),
       onChanged: (value) {
@@ -100,18 +129,24 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           onChanged(int.tryParse(value) ?? 0);
         });
       },
+      onEditingComplete: () {
+        // Si el campo está vacío al perder foco, lo restauramos a "0"
+        if (controller.text.isEmpty) {
+          setState(() {
+            controller.text = '0';
+          });
+        }
+      },
     );
   }
 
-  Widget _buildOperationButton(String operation, IconData icon) {
-    return ElevatedButton(
+  Widget _buildOperationButton(String operation) {
+    return IconButton(
       onPressed: () => _operate(operation),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color.fromARGB(170, 106, 17, 165),
-        padding: const EdgeInsets.all(20),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      icon: Text(
+        operation,
+        style: const TextStyle(fontSize: 36, color: Colors.white), // Aumenta el tamaño del texto
       ),
-      child: Icon(icon, size: 40, color: Colors.white),
     );
   }
 
@@ -121,13 +156,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         case '+':
           _result = _number1 + _number2;
           break;
-        case '-':
+        case '–': // Usar guion largo aquí también
           _result = _number1 - _number2;
           break;
-        case '*':
+        case '×':
           _result = _number1 * _number2;
           break;
-        case '/':
+        case '÷':
           _result = _number2 != 0 ? _number1 ~/ _number2 : 0;
           break;
       }
